@@ -35,15 +35,11 @@ test_data, test_data_all = _get_data('test_features.csv')
 
 
 
-
-
-
-
 # ============= get statistics and normalize it ===========================
 mean, std = np.mean(train_data_all, 0), np.std(train_data_all, 0)
 lines = ['t,s1,s2,s3,s4', 
-        '{:.4f},{:.4f},{:.4f},{:.4f}'.format(mean[0], mean[1], mean[2], mean[3]), 
-        '{:.4f},{:.4f},{:.4f},{:.4f}'.format(std[0], std[1], std[2], std[3])]
+        '{:.4f},{:.4f},{:.4f},{:.4f}'.format(mean[0], mean[1], mean[2], mean[3], mean[4]), 
+        '{:.4f},{:.4f},{:.4f},{:.4f}'.format(std[0], std[1], std[2], std[3], std[4])]
 
 with open('data_stats.txt', 'w') as f:
     f.writelines('\n'.join(lines))
