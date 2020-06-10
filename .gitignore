@@ -3,3 +3,6 @@ data/*.pkl
 *.pkl
 *.csv
 *.png
+logs/*
+old/*
+submissions/*
