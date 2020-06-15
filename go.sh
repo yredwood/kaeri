@@ -1,11 +1,12 @@
 
 
 seed=$1
-model_name=rnn_${seed}
+gpu=$2
+model_name=jiyu2_${seed}
 
-#python preprocessor.py $seed
+python preprocessor.py $seed
 #python xgb.py $model_name $seed
-CUDA_VISIBLE_DEVICES=2 python train.py $model_name $seed
+CUDA_VISIBLE_DEVICES=$gpu python train.py $model_name $seed
 
 
 #for (( seed=0;seed<12;seed+=1 ))

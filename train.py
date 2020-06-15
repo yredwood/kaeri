@@ -6,7 +6,7 @@ import torch.nn.functional as F
 from torch.utils.data import DataLoader
 
 from dataloader import Collater, CustomLoader
-from model import Model
+from model import Model, RNN
 from logger import Logger
 import sys
 
@@ -40,9 +40,12 @@ if __name__ == '__main__':
     _, valloader = data_load('data/seed_{}/val.pkl'.format(dataset_prefix), 'train')
     stats, testloader = data_load('data/seed_{}/test.pkl'.format(dataset_prefix), 'test')
     learning_rate = [1e-2, 1e-3]
-
     
-    model = Model(stats).cuda()
+    if 'rnn' in model_name:
+        model = RNN(stats).cuda()
+    else:
+        model = Model(stats).cuda()
+
     logdir = 'logs/{}'.format(model_name)
     print (model_name)
     # ========================
@@ -58,7 +61,7 @@ if __name__ == '__main__':
         for i, (static, dynamic, label, _) in enumerate(dataloader):
             model.zero_grad()
 
-            pred = model.forward(static.cuda())
+            pred = model.forward(static.cuda(), dynamic.cuda())
             loss = model.get_loss(pred, label.cuda())
             
             loss.backward()
@@ -70,7 +73,7 @@ if __name__ == '__main__':
         eval_loss = [] 
         for i, (static, dynamic, label, _) in enumerate(valloader):
             with torch.no_grad():
-                pred = model(static.cuda())
+                pred = model(static.cuda(), dynamic.cuda())
                 loss = model.get_loss(pred, label.cuda())
                 eval_loss.append(loss.data.cpu().numpy()) 
         
@@ -88,7 +91,7 @@ if __name__ == '__main__':
             output_lines = ['id,X,Y,M,V']
             for i, (static, dynamic, label, oid) in enumerate(testloader):
                 with torch.no_grad():
-                    y_pred = model(static.cuda())
+                    y_pred = model(static.cuda(), dynamic.cuda())
 
                 line = '{}'.format(oid[0])
                 y = y_pred[0].data.cpu().numpy()

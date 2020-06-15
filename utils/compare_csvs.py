@@ -18,12 +18,18 @@ def load_data(fname):
 
     return np.array(preds)
 
-fname1 = '../finals/ensemble_0610_1.csv'
-#fname1 = '../finals/nograd_0.028.csv'
-fname2 = '../finals/grad_0.019.csv'
+#fname1 = '../finals/ensemble_0610_2.csv'
+fname1 = '../finals/enskk_1.000.csv'
+#fname1 = '../finals/jiyu_400_0.011.csv'
+#fname2 = '../finals/jiyu_400_0.022.csv'
+#fname1 = '../finals/multi_layer_tanh_0.016.csv'
+fname2 = '../finals/jiyu_400_0.011.csv'
+#fname2 = '../finals/grad_0.019.csv'
+#fname2 = '../finals/rnn_0.015.csv'
 #fname2 = '../finals/folded_constgrad_0.024.csv'
 
 pr1 = load_data(fname1)
 pr2 = load_data(fname2)
 
+print (fname1, fname2)
 print (loss_func(pr1, pr2))

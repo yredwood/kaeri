@@ -46,7 +46,7 @@ class Collater():
     def __call__(self, batch):
         static = torch.FloatTensor([b[0] for b in batch])
         #dynamic = torch.FloatTensor([b[1] for b in batch])
-        dynamic = None
+        dynamic = torch.zeros(1)
         label = torch.FloatTensor([b[2] for b in batch])
         key = [b[3] for b in batch]
         return static, dynamic, label, key
