@@ -71,50 +71,68 @@ def get_static_data(dataset):
         peak = data.max(0)
         npeak = data.min(0)
 
-        starting_peak_time = np.zeros(4).astype(int)
-        starting_npeak_time = np.zeros(4).astype(int)
-
-        signal_arrival_time = np.zeros(4).astype(int)
-
         diff = data[:-1] - data[1:]
-        max_cnt_peak = 4
-        min_peak_value = 1e+2
-        local_peak_ts = np.zeros((max_cnt_peak,4)).astype(int)
-        local_peak_vs = np.zeros((max_cnt_peak,4)).astype(float)
+        max_t = 100
+        max_cnt_peak = np.zeros(4).astype(int) + max_t
+        min_peak_value = 1
+        local_peak_ts = np.zeros((max_t,4)).astype(int)
+        local_peak_vs = np.zeros((max_t,4)).astype(float)
         cnt_peak = np.zeros(4).astype(int)
+        cond1 = np.ones(4)
     
         for t in range(len(data)-2):
             for i in range(4):
-                if data[t,i] > peak[i] * 0.55 and starting_peak_time[i] == 0:
-                    starting_peak_time[i] = t
-
-                if data[t,i] < npeak[i] * 0.55 and starting_npeak_time[i] == 0:
-                    starting_npeak_time[i] = t
-                
-                if data[t,i] != 0 and signal_arrival_time[i] == 0:
-                    signal_arrival_time[i] = t
 
                 # choosing local optima 
                 # values should exceed 10, and diff should be changed
-                if diff[t,i] * diff[t+1,i] < 0 and abs(data[t,i]) > min_peak_value and cnt_peak[i] < max_cnt_peak:
+                if diff[t,i] * diff[t+1,i] < 0 and abs(data[t,i]) > min_peak_value and cnt_peak[i] < max_cnt_peak[i]:
 
                     local_peak_ts[cnt_peak[i],i] = t + 1
                     local_peak_vs[cnt_peak[i],i] = data[t+1,i]
                     cnt_peak[i] += 1
-            
-            if (starting_peak_time != 0).all() and (starting_npeak_time != 0).all() and cnt_peak.sum() == max_cnt_peak * 4:
+
+                if local_peak_vs[:,i].min() <= npeak[i] * 0.55 and local_peak_vs[:,i].max() >= peak[i] * 0.55 and cond1[i]:
+                    max_cnt_peak[i] = cnt_peak[i] + 1
+                    cond1[i] = 0
+
+            if (cnt_peak == max_cnt_peak).all():
                 break
 
-
         #signal_arrival_time = (starting_peak_time + starting_npeak_time) // 2
+        # get features
+        num_points = 4
+        try:
+            feature_times = np.zeros((num_points+1,4))
+            feature_values = np.zeros((num_points+1,4))
+            feature_times[0] = local_peak_ts[0]
+            feature_values[0] = local_peak_vs[0]
 
-        amplitude = np.array([data[starting_peak_time[i],i] for i in range(4)]) \
-                - np.array([data[starting_npeak_time[i],i] for i in range(4)])
 
-        wavelen = np.abs(starting_peak_time - starting_npeak_time)
+            for i in range(4):
+                feature_times[1:,i] = local_peak_ts[max_cnt_peak[i]-num_points:max_cnt_peak[i], i]
+                feature_values[1:,i] = local_peak_vs[max_cnt_peak[i]-num_points:max_cnt_peak[i], i]
+        except:
+            # plottign
+            # =====================
+            f, axes = plt.subplots(4,1)
+            f.set_size_inches((10,5))
+            
+            for i in range(4):
+                axes[i].plot(np.arange(len(data)), data[:,i])
+                #axes[i].plot(feature_times[:,i], feature_values[:,i], 'r+')
+                axes[i].set_title('Key: {}'.format(key))
+            
+            plt.savefig('hehehehe_{}.png'.format(key))
+            plt.close()
+            # ==============================
 
-        peak_data = np.array([data[starting_peak_time[i],i] for i in range(4)])
-        npeak_data = np.array([data[starting_npeak_time[i],i] for i in range(4)])
+#        amplitude = np.array([data[starting_peak_time[i],i] for i in range(4)]) \
+#                - np.array([data[starting_npeak_time[i],i] for i in range(4)])
+#
+#        wavelen = np.abs(starting_peak_time - starting_npeak_time)
+#
+#        peak_data = np.array([data[starting_peak_time[i],i] for i in range(4)])
+#        npeak_data = np.array([data[starting_npeak_time[i],i] for i in range(4)])
 
 #        fft_feature = []
 #        for i in range(4):
@@ -130,7 +148,7 @@ def get_static_data(dataset):
 #        
 #        for i in range(4):
 #            axes[i].plot(np.arange(len(data)), data[:,i])
-#            axes[i].plot(local_peak_ts[:,i], local_peak_vs[:,i], 'r+')
+#            axes[i].plot(feature_times[:,i], feature_values[:,i], 'r+')
 #            axes[i].set_title('Key: {}'.format(key))
 #        
 #        plt.savefig('hehehehe_{}.png'.format(key))
@@ -138,10 +156,11 @@ def get_static_data(dataset):
 #        # ==============================
 #        pdb.set_trace()
         
-
-        static_data = np.concatenate([signal_arrival_time, amplitude, wavelen, 
-            peak_data, npeak_data, starting_peak_time, starting_npeak_time,
-            local_peak_ts.reshape(-1), local_peak_vs.reshape(-1)])
+        static_data = np.concatenate([feature_times.reshape(-1), np.abs(feature_values.reshape(-1))])
+        
+#        static_data = np.concatenate([signal_arrival_time, amplitude, wavelen, 
+#            peak_data, npeak_data, starting_peak_time, starting_npeak_time,
+#            local_peak_ts.reshape(-1), local_peak_vs.reshape(-1)])
 
         dataset[key]['static'] = static_data
         dataset[key]['dynamic'] = data

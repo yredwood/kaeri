@@ -8,7 +8,7 @@ import pdb
 class Model(nn.Module):
     def __init__(self, stats):
         super().__init__()
-        input_dim = 28 + 4 * 8
+        input_dim = 40
         self.num_layers = 2
         self.l1 = nn.Linear(input_dim, 128)
         self.inter = nn.ModuleList(

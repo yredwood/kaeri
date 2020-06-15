@@ -2,7 +2,7 @@
 
 seed=$1
 gpu=$2
-model_name=jiyu2_${seed}
+model_name=jiyu3_${seed}
 
 python preprocessor.py $seed
 #python xgb.py $model_name $seed
