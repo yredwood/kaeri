@@ -1,8 +1,8 @@
 
 
-seed=$1
+seed=$(( $1+16 ))
 gpu=$2
-model_name=jiyu3_${seed}
+model_name=jiyu4_2layer_${seed}
 
 python preprocessor.py $seed
 #python xgb.py $model_name $seed
