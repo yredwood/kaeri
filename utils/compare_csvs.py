@@ -28,7 +28,8 @@ fname1 = '../finals/jy0.0827.csv'
 #fname2 = '../finals/grad_0.019.csv'
 #fname2 = '../finals/rnn_0.015.csv'
 #fname2 = '../finals/jiyu3_400_0.006.csv'
-fname2 = '../finals/jiyu4_2layer_400_0.006.csv'
+#fname2 = '../finals/jiyu4_2layer_400_0.006.csv'
+fname2 = '../finals/tmp_400_0.004.csv'
 
 pr1 = load_data(fname1)
 pr2 = load_data(fname2)

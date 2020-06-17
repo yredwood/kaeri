@@ -15,24 +15,21 @@ class Model(nn.Module):
                 [nn.Linear(128,128) for _ in range(self.num_layers)]
         )
         self.l2 = nn.Linear(128, 4)
-        #self.bn_list = nn.ModuleList(
-                #[nn.BatchNorm1d(32) for _ in range(self.num_layers)]
-        #)
-        #self.prebn = nn.BatchNorm1d(input_dim, affine=False)
-#        self.feat_mean = nn.Parameter(\
-#                torch.Tensor([106, 106, 105, 82, 8e+5, 8.4e+5, 8.4e+5, 1e+6,
-#            10, 10, 10, 10]))
-#
-#        self.feat_std = nn.Parameter(\
-#                torch.Tensor([40, 40, 34, 33,
-#                    6.6e+5, 6.5e+5, 5.8e+5, 8e+5,
-#                    11, 11, 2.9, 3.0]))
 
         self.stat_mean = nn.Parameter(torch.Tensor(stats[0]), requires_grad=False)
         self.stat_std = nn.Parameter(torch.Tensor(stats[1]), requires_grad=False)
 
         #self.dyn_mean = nn.Parameter(torch.Tensor(stats[2]))
 
+        # inverse params
+#        self.inv_l1 = nn.Linear(2, 128)
+#        self.inv_l2 = nn.Linear(128, 1)
+#        self.sc = nn.Parameter(torch.ones(1))
+##        self.xs = nn.Parameter(torch.zeros(4))
+##        self.ys = nn.Parameter(torch.zeros(4))
+#
+#        self.xs = nn.Parameter(torch.Tensor([-5.2691, 5.2691, -0.0119, 0.0061]))
+#        self.ys = nn.Parameter(torch.Tensor([-3.04, -3.04, 6.06, 4.05]))
 
     def forward(self, data, dynamic):
         data = (data - self.stat_mean) / self.stat_std
@@ -56,6 +53,40 @@ class Model(nn.Module):
             torch.sum(((pred[:,2:] - target[:,2:]) / (target[:,2:]+1e-6))**2, 1)
         )
         return (0.5*e1 + 0.5*e2).mean()
+
+    def invert_forward(self, data, dynamic):
+        # data: (x,y,m,v)
+        l = (data[:,0:1] / 100. - self.xs.unsqueeze(0))**2 + (data[:,1:2] / 100. - self.ys.unsqueeze(0))**2
+        s = torch.sqrt(l) * self.sc # (b,4)
+        
+        input = torch.cat([s.unsqueeze(2), data[:,3:4].unsqueeze(1).repeat(1,4,1)], -1)
+
+        out = F.relu(self.inv_l1(input))
+
+#        for _l in range(self.num_layers):
+#            prev = out
+#            out = self.inter[_l](out)
+#            out = F.relu(out) + prev
+
+        out = self.inv_l2(out)
+        t = out.squeeze(-1)
+
+#        v = data[:,3:4] * self.vc
+#        a = data[:,2:3] * self.a + 1e-5
+#        t = torch.sqrt( 2 * s / a + (v / a)**2 ) - v / a
+
+        #t = data[:,3:4] / 2 / self.a + torch.sqrt(s / self.a - (data[:,3:4] / self.a / 2)**2)
+        #t = torch.sqrt( 2*s / self.a + data[:,3:4]**2 / self.a / 2 ) - data[:,3:4] / self.a + self.b
+        
+        return t
+
+    def invert_get_loss(self, pred, target):
+        # only compares distance
+        # get first time feature
+        time = target[:,:20].reshape(-1,5,4)[:,0]
+        return torch.abs(pred - time).mean()
+
+
 
 class RNN(nn.Module):
     def __init__(self, stats):

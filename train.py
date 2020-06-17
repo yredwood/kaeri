@@ -63,7 +63,13 @@ if __name__ == '__main__':
 
             pred = model.forward(static.cuda(), dynamic.cuda())
             loss = model.get_loss(pred, label.cuda())
-            
+#            pred = model.invert_forward(label.cuda(), dynamic.cuda())
+#            loss = model.invert_get_loss(pred, static.cuda())
+#            inverse_pred = model.invert_forward(pred, dynamic.cuda())
+#            inverse_loss = model.invert_get_loss(inverse_pred, static.cuda())
+#            loss_sum = loss + inverse_loss
+#            loss_sum.backward()
+
             loss.backward()
             optimizer.step()
 
@@ -75,6 +81,8 @@ if __name__ == '__main__':
             with torch.no_grad():
                 pred = model(static.cuda(), dynamic.cuda())
                 loss = model.get_loss(pred, label.cuda())
+#                pred = model.invert_forward(label.cuda(), dynamic.cuda())
+#                loss = model.invert_get_loss(pred, static.cuda())
                 eval_loss.append(loss.data.cpu().numpy()) 
         
         print ('epoch {}| tr loss {:.4f} | ev loss {:.4f}'.format(epoch, np.mean(losses), np.mean(eval_loss)))
@@ -102,7 +110,6 @@ if __name__ == '__main__':
             output_lines.append(str(np.mean(eval_loss)))
             with open(output_fname, 'wt') as f:
                 f.writelines('\n'.join(output_lines))
-
 
 
 

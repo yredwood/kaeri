@@ -154,9 +154,27 @@ def get_static_data(dataset):
 #        plt.savefig('hehehehe_{}.png'.format(key))
 #        plt.close()
 #        # ==============================
-#        pdb.set_trace()
         
         static_data = np.concatenate([feature_times.reshape(-1), np.abs(feature_values.reshape(-1))])
+
+#        if 'label' in dataset[key].keys():
+#            x, y, v = 100,-400,0.4
+#            if (dataset[key]['label'] == np.array([x,y,dataset[key]['label'][2],v])).all():
+#                f, axes = plt.subplots(4,1)
+#                f.set_size_inches((10,5))
+#                
+#                for i in range(4):
+#                    axes[i].plot(np.arange(len(data)), data[:,i])
+#                    axes[i].plot(feature_times[:,i], feature_values[:,i], 'r+')
+#                    axes[i].set_title('Key: {}'.format(key))
+#                
+#                plt.savefig('figs/{}_{}_{}{}{}.png'.format(dataset[key]['label'][2],
+#                    key, x, y, v))
+#                plt.close()
+#                print (feature_times[0])
+#                print (key, ' plotted')
+
+
         
 #        static_data = np.concatenate([signal_arrival_time, amplitude, wavelen, 
 #            peak_data, npeak_data, starting_peak_time, starting_npeak_time,

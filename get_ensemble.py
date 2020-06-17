@@ -5,8 +5,8 @@ import pdb
 num_ensemble = 32
 epoch = 400
 #output_fname = 'finals/relu_bigger_2layer_{}_{:.3f}.csv'
-output_fname = 'finals/jiyu4_2layer_{}_{:.3f}.csv'
-fname_list = ['submissions/jiyu4_2layer_{}_epoch{}.csv'.format(i, epoch) for i in range(num_ensemble)]
+output_fname = 'finals/baseline_{}_{:.3f}.csv'
+fname_list = ['submissions/baseline_{}_epoch{}.csv'.format(i, epoch) for i in range(num_ensemble)]
 #fname_list = ['submissions/jiyu3_{}_epoch{}.csv'.format(i, epoch) for i in range(4,15)]
 #fname_list = ['finals/ensemble_0610_2.csv', 'finals/relu_bigger_layer_0.019.csv']
 
