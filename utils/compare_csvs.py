@@ -19,8 +19,9 @@ def load_data(fname):
     return np.array(preds)
 
 #fname1 = '../finals/jiyu3_400_0.006.csv'
-fname1 = '../finals/jy0.0827.csv'
+#fname1 = '../finals/jy0.0827.csv'
 #fname1 = '../finals/ensemble_0610_2.csv'
+fname1 = '../finals/baseline_400_0.00624.csv'
 #fname1 = '../finals/enskk_1.000.csv'
 #fname1 = '../finals/jiyu_400_0.011.csv'
 #fname2 = '../finals/jiyu_400_0.022.csv'
@@ -29,7 +30,8 @@ fname1 = '../finals/jy0.0827.csv'
 #fname2 = '../finals/rnn_0.015.csv'
 #fname2 = '../finals/jiyu3_400_0.006.csv'
 #fname2 = '../finals/jiyu4_2layer_400_0.006.csv'
-fname2 = '../finals/tmp_400_0.004.csv'
+#fname1 = '../finals/baseline_400_0.00624.csv'
+fname2 = '../finals/inter256_400_0.00577.csv'
 
 pr1 = load_data(fname1)
 pr2 = load_data(fname2)

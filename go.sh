@@ -2,7 +2,8 @@
 
 seed=$(( $1+16 ))
 gpu=$2
-model_name=baseline_${seed}
+#model_name=inter256_${seed}
+model_name=dynamic_feature
 
 #python preprocessor.py $seed
 #python xgb.py $model_name $seed

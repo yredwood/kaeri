@@ -9,12 +9,13 @@ class Model(nn.Module):
     def __init__(self, stats):
         super().__init__()
         input_dim = 40
+        inter_dim = 128
         self.num_layers = 2
-        self.l1 = nn.Linear(input_dim, 128)
+        self.l1 = nn.Linear(input_dim, inter_dim)
         self.inter = nn.ModuleList(
-                [nn.Linear(128,128) for _ in range(self.num_layers)]
+                [nn.Linear(inter_dim,inter_dim) for _ in range(self.num_layers)]
         )
-        self.l2 = nn.Linear(128, 4)
+        self.l2 = nn.Linear(inter_dim, 4)
 
         self.stat_mean = nn.Parameter(torch.Tensor(stats[0]), requires_grad=False)
         self.stat_std = nn.Parameter(torch.Tensor(stats[1]), requires_grad=False)
