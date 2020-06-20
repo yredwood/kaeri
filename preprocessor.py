@@ -56,7 +56,7 @@ def get_label(fname, dataset):
     return dataset
 
 
-def get_static_data(dataset):
+def get_features(dataset):
     static_data = []
 
     for key in dataset.keys():
@@ -156,6 +156,7 @@ def get_static_data(dataset):
 #        # ==============================
         
         static_data = np.concatenate([feature_times.reshape(-1), np.abs(feature_values.reshape(-1))])
+        dynamic_data = np.concatenate([local_peak_ts, np.abs(local_peak_vs)], axis=-1)
 
 #        if 'label' in dataset[key].keys():
 #            x, y, v = 100,-400,0.4
@@ -181,7 +182,7 @@ def get_static_data(dataset):
 #            local_peak_ts.reshape(-1), local_peak_vs.reshape(-1)])
 
         dataset[key]['static'] = static_data
-        dataset[key]['dynamic'] = data
+        dataset[key]['dynamic'] = dynamic_data
 
     return dataset
 
@@ -305,8 +306,8 @@ if __name__ == '__main__':
     train_dataset = get_label(os.path.join(data_root, 'train_target.csv'), train_dataset)
 
     # 3. add static features
-    train_dataset = get_static_data(train_dataset)
-    test_dataset = get_static_data(test_dataset)
+    train_dataset = get_features(train_dataset)
+    test_dataset = get_features(test_dataset)
     
 #    for i in test_dataset.keys():
 #        visualize_static(test_dataset, i, 'plot{}.png'.format(i))

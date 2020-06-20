@@ -31,7 +31,7 @@ fname1 = '../finals/baseline_400_0.00624.csv'
 #fname2 = '../finals/jiyu3_400_0.006.csv'
 #fname2 = '../finals/jiyu4_2layer_400_0.006.csv'
 #fname1 = '../finals/baseline_400_0.00624.csv'
-fname2 = '../finals/inter256_400_0.00577.csv'
+fname2 = '../finals/rnn_average_400_0.00513.csv'
 
 pr1 = load_data(fname1)
 pr2 = load_data(fname2)

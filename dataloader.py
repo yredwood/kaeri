@@ -34,7 +34,7 @@ class CustomLoader(torch.utils.data.Dataset):
             d_all.append(dynamic)
             l_all.append(label)
             i_all.append(_id)
-            
+
         return np.array(s_all), np.array(d_all), np.array(l_all), i_all
 
 
@@ -45,8 +45,7 @@ class Collater():
 
     def __call__(self, batch):
         static = torch.FloatTensor([b[0] for b in batch])
-        #dynamic = torch.FloatTensor([b[1] for b in batch])
-        dynamic = torch.zeros(1)
+        dynamic = torch.FloatTensor([b[1] for b in batch])
         label = torch.FloatTensor([b[2] for b in batch])
         key = [b[3] for b in batch]
         return static, dynamic, label, key
